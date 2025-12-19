@@ -1,0 +1,53 @@
+.left-sidebar {
+    position: sticky;
+    top: 70px;
+    height: calc(100vh - 70px);
+    width: 300px;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.sidebar__item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sidebar__item:hover {
+    background-color: #f0f2f5;
+}
+
+.sidebar__icon {
+    font-size: 24px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar__label {
+    font-weight: 500;
+    color: #050505;
+}
+
+.sidebar__divider {
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #ced0d4;
+}
+
+.sidebar__heading {
+    font-size: 16px;
+    color: #65676b;
+    padding: 10px;
+    margin: 0;
+}
+
+.sidebar__shortcuts {
+    margin-top: 5px;
+}
