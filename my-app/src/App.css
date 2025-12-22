@@ -39,3 +39,44 @@
 .blank {
   color: rgba(255, 0, 0, 0.765);
 }
+
+/* Toggle Button Styles */
+.toggle-btn {
+  position: relative;
+  height: 30px;
+  width: 60px;
+  background-color: #42455a;
+  border-radius: 80px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+}
+
+.toggle-btn .icon {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  height: 35px;
+  width: 35px;
+  font-size: 16px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #42455a;
+  border: 1px solid #999;
+  border-radius: 50%;
+  transition: all 0.4s ease;
+}
+
+/* Active state - when toggled */
+.toggle-btn.active {
+  background-color: #fff;
+}
+
+.toggle-btn.active .icon {
+  left: calc(100% - 35px);
+  color: #ffcc00;
+  background: #fff;
+  border-color: #ffcc00;
+}

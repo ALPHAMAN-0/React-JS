@@ -1,7 +1,7 @@
-import React,{useState} from 'react'
+import React from 'react'
 
 export default function Text(props) {
-    const [text, setText] = useState(props.heading);
+    const { text, setText } = props;
     
     function capitalizeName(name) {
      return name
@@ -13,9 +13,8 @@ export default function Text(props) {
 
     const handleUpClick = ()=>{
         console.log("Uppercase was clicked");
-        setText(" ");
-        //let newText = capitalizeName(text);
-       // setText(newText);
+        let newText = capitalizeName(text);
+        setText(newText);
     }
     const handleOnChange = (event)=>{
         console.log("On Change");

@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Navbar(props) {
+  const [isDark, setIsDark] = useState(true);
+
+  const handleToggle = () => {
+    setIsDark(!isDark);
+  };
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -11,10 +18,10 @@ function Navbar(props) {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="/">Home</a>
+              <Link className="nav-link active" aria-current="page" to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">QR Generator</a>
+              <Link className="nav-link" to="/qr-generator">QR Generator</Link>
             </li>
             <li className="nav-item dropdown">
               <a className="nav-link dropdown-toggle" href="/" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -30,6 +37,12 @@ function Navbar(props) {
               </ul>
             </li>
           </ul>
+
+        </div>
+      </div>
+      <div className={`toggle-btn ${!isDark ? 'active' : ''}`} onClick={handleToggle}>
+        <div className="icon">
+          <i className={`fa-solid ${isDark ? 'fa-moon' : 'fa-sun'}`}></i>
         </div>
       </div>
     </nav>
