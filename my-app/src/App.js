@@ -9,7 +9,7 @@ import ChatBox from './components/ChatBox';
 
 function App() {
   const [sharedText, setSharedText] = useState('');
-  const [isDark, setIsDark] = useState(true); // Moon mode (dark) is default
+  const [isDark, setIsDark] = useState(true); 
   const [isChatOpen, setIsChatOpen] = useState(false);
 
   return (
