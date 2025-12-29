@@ -1,0 +1,275 @@
+<html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rate Limiter Visualization</title>
+    <style>
+      body { font-family: Arial, sans-serif; padding: 20px; background: #1a1a2e; color: #fff; }
+      .container { display: flex; gap: 20px; flex-wrap: wrap; }
+      .panel { background: #16213e; padding: 20px; border-radius: 10px; min-width: 300px; }
+      h2 { color: #e94560; margin-top: 0; }
+      .queue-box { display: flex; flex-wrap: wrap; gap: 5px; min-height: 50px; }
+      .queue-item { background: #0f3460; padding: 5px 10px; border-radius: 5px; font-size: 12px; }
+      .window { background: #0f3460; margin: 10px 0; padding: 10px; border-radius: 5px; }
+      .window-header { color: #e94560; font-weight: bold; }
+      .batch { color: #00ff88; margin-top: 5px; }
+      .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .stat { background: #0f3460; padding: 10px; border-radius: 5px; text-align: center; }
+      .stat-value { font-size: 24px; color: #00ff88; }
+      .timeline { margin-top: 20px; }
+      .timeline-bar { height: 30px; background: #0f3460; border-radius: 5px; position: relative; overflow: hidden; }
+      .timeline-progress { height: 100%; background: linear-gradient(90deg, #e94560, #00ff88); width: 0%; transition: width 0.3s; }
+      #log { max-height: 300px; overflow-y: auto; background: #0a0a15; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px; }
+      .log-entry { margin: 2px 0; padding: 3px; border-left: 3px solid #e94560; padding-left: 10px; }
+    </style>
+  </head>
+  <body>
+    <h1>⚡ Rate Limiter Visualization</h1>
+    
+    <div class="container">
+      <div class="panel">
+        <h2>📊 Stats</h2>
+        <div class="stats">
+          <div class="stat">
+            <div>Window</div>
+            <div class="stat-value" id="windowNum">0</div>
+          </div>
+          <div class="stat">
+            <div>Queue Size</div>
+            <div class="stat-value" id="queueSize">0</div>
+          </div>
+          <div class="stat">
+            <div>Processed</div>
+            <div class="stat-value" id="processed">0</div>
+          </div>
+          <div class="stat">
+            <div>Count/Limit</div>
+            <div class="stat-value" id="countLimit">0/3</div>
+          </div>
+        </div>
+        <div class="timeline">
+          <div>Progress</div>
+          <div class="timeline-bar">
+            <div class="timeline-progress" id="progress"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>📦 Queue</h2>
+        <div class="queue-box" id="queueBox"></div>
+      </div>
+
+      <div class="panel">
+        <h2>📝 Console Log</h2>
+        <div id="log"></div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      const queue = [];
+      let count = 0;
+      let windowStart = Date.now();
+      let windowNum = 0;
+      let totalProcessed = 0;
+
+      const WINDOW_MS = 300;
+      const LIMIT = 3;
+
+      function updateUI() {
+        document.getElementById('queueSize').textContent = queue.length;
+        document.getElementById('windowNum').textContent = windowNum;
+        document.getElementById('processed').textContent = totalProcessed;
+        document.getElementById('countLimit').textContent = `${count}/${LIMIT}`;
+        document.getElementById('progress').style.width = `${(totalProcessed / 100) * 100}%`;
+        
+        const queueBox = document.getElementById('queueBox');
+        queueBox.innerHTML = queue.slice(0, 20).map(i => `<div class="queue-item">${i}</div>`).join('') 
+          + (queue.length > 20 ? `<div class="queue-item">+${queue.length - 20} more</div>` : '');
+      }
+
+      function logMessage(msg) {
+        const log = document.getElementById('log');
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        log.appendChild(entry);
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function processQueue() {
+        const now = Date.now();
+
+        if (now - windowStart >= WINDOW_MS) {
+          windowStart = now;
+          count = 0;
+          windowNum++;
+          logMessage(`── Window ${windowNum} started ──`);
+        }
+
+        const batch = [];
+
+        while (count < LIMIT && queue.length > 0) {
+          batch.push(queue.shift());
+          count++;
+          totalProcessed++;
+        }
+
+        if (batch.length > 0) {
+          logMessage(`Batch: ${batch.join(", ")}`);
+        }
+
+        updateUI();
+
+        if (queue.length > 0) {
+          setTimeout(processQueue, WINDOW_MS - (now - windowStart));
+        } else {
+          logMessage(`✅ All done! Processed ${totalProcessed} items.`);
+        }
+      }
+
+      function f1(a) {
+        queue.push(a);
+        updateUI();
+      }
+
+      // Debounce function (standard library equivalent)
+      function debounce(func, wait, options = {}) {
+        let timeoutId = null;
+        let lastArgs = null;
+        let lastThis = null;
+        let result = null;
+        let lastCallTime = null;
+        let lastInvokeTime = 0;
+
+        const leading = options.leading || false;
+        const trailing = options.trailing !== false;
+        const maxWait = options.maxWait;
+
+        function invokeFunc(time) {
+          const args = lastArgs;
+          const thisArg = lastThis;
+          lastArgs = lastThis = null;
+          lastInvokeTime = time;
+          result = func.apply(thisArg, args);
+          return result;
+        }
+
+        function shouldInvoke(time) {
+          const timeSinceLastCall = time - lastCallTime;
+          const timeSinceLastInvoke = time - lastInvokeTime;
+
+          return (
+            lastCallTime === null ||
+            timeSinceLastCall >= wait ||
+            timeSinceLastCall < 0 ||
+            (maxWait !== undefined && timeSinceLastInvoke >= maxWait)
+          );
+        }
+
+        function trailingEdge(time) {
+          timeoutId = null;
+          if (trailing && lastArgs) {
+            return invokeFunc(time);
+          }
+          lastArgs = lastThis = null;
+          return result;
+        }
+
+        function remainingWait(time) {
+          const timeSinceLastCall = time - lastCallTime;
+          const timeSinceLastInvoke = time - lastInvokeTime;
+          const timeWaiting = wait - timeSinceLastCall;
+
+          return maxWait !== undefined
+            ? Math.min(timeWaiting, maxWait - timeSinceLastInvoke)
+            : timeWaiting;
+        }
+
+        function timerExpired() {
+          const time = Date.now();
+          if (shouldInvoke(time)) {
+            return trailingEdge(time);
+          }
+          timeoutId = setTimeout(timerExpired, remainingWait(time));
+        }
+
+        function leadingEdge(time) {
+          lastInvokeTime = time;
+          timeoutId = setTimeout(timerExpired, wait);
+          return leading ? invokeFunc(time) : result;
+        }
+
+        function debounced(...args) {
+          const time = Date.now();
+          const isInvoking = shouldInvoke(time);
+
+          lastArgs = args;
+          lastThis = this;
+          lastCallTime = time;
+
+          if (isInvoking) {
+            if (timeoutId === null) {
+              return leadingEdge(time);
+            }
+            if (maxWait !== undefined) {
+              timeoutId = setTimeout(timerExpired, wait);
+              return invokeFunc(time);
+            }
+          }
+          if (timeoutId === null) {
+            timeoutId = setTimeout(timerExpired, wait);
+          }
+          return result;
+        }
+
+        debounced.cancel = function () {
+          if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+          }
+          lastInvokeTime = 0;
+          lastArgs = lastCallTime = lastThis = timeoutId = null;
+        };
+
+        debounced.flush = function () {
+          return timeoutId === null ? result : trailingEdge(Date.now());
+        };
+
+        debounced.pending = function () {
+          return timeoutId !== null;
+        };
+
+        return debounced;
+      }
+
+      // Simple debounce (most common use case)
+      function debounceSimple(func, wait) {
+        let timeoutId = null;
+        return function (...args) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(this, args), wait);
+        };
+      }
+
+      // Example usage:
+      const debouncedLog = debounce((msg) => {
+        logMessage(`Debounced: ${msg}`);
+      }, 300);
+
+      const debouncedLogLeading = debounce((msg) => {
+        logMessage(`Leading: ${msg}`);
+      }, 300, { leading: true, trailing: false });
+
+      // Add items first
+      for (let i = 0; i < 100; i++) {
+        f1(i);
+        debouncedLog(i); // Only logs last value after 300ms pause
+      }
+
+      // Start processing after a small delay
+      logMessage('Starting rate limiter...');
+      setTimeout(processQueue, 100);
+    </script>
+  </body>
+</html>
