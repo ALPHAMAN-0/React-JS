@@ -1,29 +1,72 @@
-# React JS
+# React JS - Learning Repository
 
-React JS is a popular JavaScript library for building user interfaces, especially single-page applications. Developed and maintained by Facebook, React allows developers to create large web applications that can update and render efficiently in response to data changes.
-
-## Key Features
-- **Component-Based Architecture**: Build encapsulated components that manage their own state, then compose them to make complex UIs.
-- **Declarative UI**: Design simple views for each state in your application, and React will efficiently update and render just the right components when your data changes.
-- **Virtual DOM**: React uses a virtual DOM to optimize rendering and improve app performance.
-- **Unidirectional Data Flow**: Data flows in one direction, making the app easier to debug and understand.
-- **Rich Ecosystem**: Supported by a large community, with many libraries and tools for routing, state management, and more.
-
-## Getting Started
-To start using React JS:
-1. Install Node.js and npm.
-2. Create a new React app using Create React App:
-   ```bash
-   npx create-react-app my-app
-   cd my-app
-   npm start
-   ```
-3. Start building your components in the `src` folder.
-
-## Useful Resources
-- [React Official Documentation](https://react.dev/)
-- [Create React App](https://create-react-app.dev/)
-- [React GitHub Repository](https://github.com/facebook/react)
+A hands-on learning repository for React.js covering fundamentals, component architecture, state management, and full-stack integration. Includes multiple projects ranging from starter apps to full-stack applications with backend services.
 
 ---
-Feel free to customize this project and explore the power of React JS!
+
+## Contents
+
+| Folder | Description | Key Concepts |
+|--------|-------------|--------------|
+| `HTML/` | Basic HTML file for React integration | HTML fundamentals, script loading |
+| `JS Refresher/` | JavaScript refresher before diving into React | ES6+, modern JavaScript syntax |
+| `my-app/` | First React application (Create React App) | Components, JSX, project scaffolding |
+| `todolist/` | Todo List application built with React | State management, event handling, CRUD operations |
+| `portal.aiub/` | AIUB Portal clone built with React | Component composition, styling, real-world UI |
+| `MCQ Practice/` | Multiple Choice Question practice app | Dynamic rendering, conditional logic |
+| `Jubayer task/` | Full-stack project with React frontend, NestJS backend, and MySQL database | Vite, TypeScript, NestJS, Docker, MySQL, full-stack architecture |
+
+---
+
+## Prerequisites
+
+- **Node.js** (v16 or higher) and **npm** installed
+- Basic understanding of HTML, CSS, and JavaScript
+- A code editor such as VS Code
+
+---
+
+## How to Use
+
+1. Clone this repository:
+   ```bash
+   git clone <repository-url>
+   cd React-JS
+   ```
+
+2. Navigate into any project folder and install dependencies:
+   ```bash
+   cd my-app
+   npm install
+   npm start
+   ```
+
+3. For the full-stack project (`Jubayer task`):
+   ```bash
+   # Start the database
+   cd "Jubayer task/db"
+   docker-compose up -d
+
+   # Start the backend
+   cd ../server
+   npm install && npm run start:dev
+
+   # Start the frontend
+   cd ../src
+   npm install && npm run dev
+   ```
+
+4. Follow the folders in order for a structured learning path:
+   - Start with `HTML/` and `JS Refresher/` for prerequisites
+   - Move to `my-app/` to understand React basics
+   - Build the `todolist/` to practice state and events
+   - Explore `portal.aiub/` and `Jubayer task/` for advanced patterns
+
+---
+
+## Resources
+
+- [React Official Documentation](https://react.dev/)
+- [Create React App](https://create-react-app.dev/)
+- [Vite](https://vitejs.dev/)
+- [NestJS Documentation](https://docs.nestjs.com/)
