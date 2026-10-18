@@ -2,6 +2,18 @@
 
 A hands-on learning repository for React.js covering fundamentals, component architecture, state management, and full-stack integration. Includes multiple projects ranging from starter apps to full-stack applications with backend services.
 
+## Architecture / How it Works
+
+```mermaid
+flowchart LR
+    A[User] --> B[React Js]
+    B --> C{Logic}
+    C --> D[(Data)]
+    C --> E[Output]
+    D --> C
+```
+
+
 ---
 
 ## Contents
