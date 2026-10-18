@@ -5,12 +5,18 @@ A hands-on learning repository for React.js covering fundamentals, component arc
 ## Architecture / How it Works
 
 ```mermaid
-flowchart LR
-    A[User] --> B[React Js]
-    B --> C{Logic}
-    C --> D[(Data)]
-    C --> E[Output]
-    D --> C
+flowchart TD
+  HTML["HTML"]
+  JSR["JS Refresher"]
+  MYAPP["my-app"]
+  TODO["todolist"]
+  PORTAL["portal.aiub"]
+  JFRONT["Jubayer-Frontend"]
+  JSERVER["Jubayer-Server"]
+  JDB["Jubayer-DB"]
+
+  JFRONT --> JSERVER
+  JSERVER --> JDB
 ```
 
 
